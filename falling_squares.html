@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+	<head>  
+		<meta charset="utf-8">
+		<meta name="description" content="" />  
+		<meta name="keywords" content="" />
+		<meta name="author" content="" />
+		<title>Falling Squares</title>
+		<style type="text/css">
+			html, body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			#main { margin: 0px; padding: 0px; }
+		</style>
+	</head>
+
+	<body>
+		<canvas id="main">Canvas not supported :/ </canvas>
+	</body>
+	
+	<script type="text/javascript">
+		var FallingSquares = {},
+			canvas,
+			context,
+			bg = { width: 0, height: 0 },
+			square = { x: 0, y: 0, width: 100, height: 100 },
+			acceleration = 0.1,
+			speed = 0.0;
+
+			FallingSquares.init = function() {
+				canvas = document.getElementById('main');
+
+				if (canvas && canvas.getContext) {
+					context = canvas.getContext('2d');
+					
+					render();
+					reArrange();
+					window.addEventListener("resize", windowResized, false);
+				}
+			}
+
+			function checkBottom() {
+				if (square.y + square.height > canvas.height) {
+					square.y = canvas.height - square.height;
+					acceleration = 0;
+					speed = 0;
+				}
+			}
+			
+			/* Render Canvas */
+			function render() {
+				requestAnimationFrame(render);
+
+				checkBottom();
+				speed += acceleration;
+				square.y += speed;
+				
+				/* Create black background */
+				context.fillStyle = '#000000';
+				context.fillRect(0, 0, bg.width, bg.height);
+
+				context.fillStyle = '#FF0000';
+				context.fillRect(square.x, square.y, square.width, square.height);
+			}
+			
+			/* Re-arrange Objects on Resize */
+			function reArrange() {
+				canvas.width = window.innerWidth;
+				canvas.height = window.innerHeight;
+				
+				bg.width = canvas.width;
+				bg.height = canvas.height;
+
+				square.x = canvas.width * 0.5;
+			}
+			
+			function windowResized(e) {
+				reArrange();
+			}
+
+		window.addEventListener("load", function() {
+			FallingSquares.init();
+		}, false);
+
+		// requestAnimationFrame
+		(function() {
+		    var lastTime = 0;
+		    var vendors = ['ms', 'moz', 'webkit', 'o'];
+		    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+		        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+		        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
+		                                   || window[vendors[x]+'CancelRequestAnimationFrame'];
+		    }
+		 
+		    if (!window.requestAnimationFrame)
+		        window.requestAnimationFrame = function(callback, element) {
+		            var currTime = new Date().getTime();
+		            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+		            var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+		              timeToCall);
+		            lastTime = currTime + timeToCall;
+		            return id;
+		        };
+		 
+		    if (!window.cancelAnimationFrame)
+		        window.cancelAnimationFrame = function(id) {
+		            clearTimeout(id);
+		        };
+		}());
+	</script>
+
+</html>
