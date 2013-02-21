@@ -22,18 +22,27 @@
 	</body>
 	
 	<script type="text/javascript">
-		var Template = {},
+		var Shapes = {},
 			canvas,
 			context,
-			bg = { width: 0, height: 0 };
+			bg = { width: 0, height: 0 },
+			img1,
+			isImageLoaded = false;
 
-			Template.init = function() {
+			Shapes.init = function() {
 				canvas = document.getElementById('main');
 
 				if (canvas && canvas.getContext) {
 					context = canvas.getContext('2d');
 
 					console.log(context);
+
+					// simple image
+					img1 = new Image();
+					img1.src = "http://www.topfloormusic.com/keywords/Otep_Shamaya/Otep_Shamaya_5.jpg";
+					img1.onload = function() {
+						isImageLoaded = true;
+					}
 					
 					render();
 					reArrange();
@@ -63,6 +72,35 @@
 				context.arc(300, 300, 50, 0, Math.PI * 2);
 				context.fill();
 				context.stroke();
+
+				// draw triangle
+				context.beginPath();
+				context.moveTo(75, 50);
+				context.lineTo(100, 75);
+				context.lineTo(100, 25);
+				context.lineTo(75, 50);
+				context.fill();
+				context.stroke();
+
+				// quadratic curve
+				context.beginPath();
+				context.moveTo(200, 50);
+				context.quadraticCurveTo(500, 100, 400, 250);
+				context.stroke();
+
+				// bezier curve
+				context.beginPath();
+				context.moveTo(200, 75);
+				context.bezierCurveTo(150, 150, 356, 315, 400, 460);
+				context.stroke();
+
+				if (isImageLoaded) {
+					// simple image
+					context.drawImage(img1, 500, 50);
+
+					// part of an image
+					context.drawImage(img1, 100, 0, 100, 100, 500, 330, 200, 200);
+				}
 			}
 			
 			/* Re-arrange Objects on Resize */
@@ -79,7 +117,7 @@
 			}
 
 		window.addEventListener("load", function() {
-			Template.init();
+			Shapes.init();
 		}, false);
 	</script>
 
