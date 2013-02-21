@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>  
+		<meta charset="utf-8">
+		<meta name="description" content="" />  
+		<meta name="keywords" content="" />
+		<meta name="author" content="" />
+		<title>Clipping Region</title>
+		<style type="text/css">
+			html, body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			#main { margin: 0px; padding: 0px; }
+		</style>
+		<script src="js/rAF.js"></script>
+	</head>
+
+	<body>
+		<canvas id="main">Canvas not supported :/ </canvas>
+	</body>
+	
+	<script type="text/javascript">
+		var ClippingRegion = {},
+			canvas,
+			context,
+			bg = { width: 0, height: 0 };
+
+			ClippingRegion.init = function() {
+				canvas = document.getElementById('main');
+
+				if (canvas && canvas.getContext) {
+					context = canvas.getContext('2d');
+
+					reArrange();
+
+					/* Create black background */
+					context.fillStyle = '#000000';
+					context.fillRect(0, 0, bg.width, bg.height);
+					
+					context.save();
+					
+					// helps visualize clip area
+					context.strokeStyle = '#333333';
+					context.strokeRect(100, 100, 200, 200);
+
+					// Clipping area 1
+					context.rect(100, 100, 200, 200);
+					context.clip();
+
+					// red rectangle
+					context.fillStyle = "#FF0000";
+					context.fillRect(190, 100, 300, 300);
+
+					context.restore();
+					context.fillStyle = "#FF0000";
+
+					// Clipping area 2
+					context.arc(400, 400, 40, (Math.PI/180) * 0, (Math.PI/180) * 360);
+					context.clip();
+
+					// red rectangle
+					context.fillRect(300, 300, 100, 100);
+					
+					render();
+					window.addEventListener("resize", windowResized, false);
+				}
+			}
+			
+			/* Render Canvas */
+			function render() {
+				requestAnimationFrame(render);
+			}
+			
+			/* Re-arrange Objects on Resize */
+			function reArrange() {
+				canvas.width = window.innerWidth;
+				canvas.height = window.innerHeight;
+				
+				bg.width = canvas.width;
+				bg.height = canvas.height;
+			}
+			
+			function windowResized(e) {
+				reArrange();
+			}
+
+		window.addEventListener("load", function() {
+			ClippingRegion.init();
+		}, false);
+	</script>
+
+</html>
