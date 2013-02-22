@@ -14,7 +14,6 @@
 			}
 			#main { margin: 0px; padding: 0px; }
 		</style>
-		<script src="js/rAF.js"></script>
 	</head>
 
 	<body>
@@ -34,35 +33,6 @@
 					context = canvas.getContext('2d');
 
 					reArrange();
-
-					/* Create black background */
-					context.fillStyle = '#000000';
-					context.fillRect(0, 0, bg.width, bg.height);
-					
-					context.save();
-					
-					// helps visualize clip area
-					context.strokeStyle = '#333333';
-					context.strokeRect(100, 100, 200, 200);
-
-					// Clipping area 1
-					context.rect(100, 100, 200, 200);
-					context.clip();
-
-					// red rectangle
-					context.fillStyle = "#FF0000";
-					context.fillRect(190, 100, 300, 300);
-
-					context.restore();
-					context.fillStyle = "#FF0000";
-
-					// Clipping area 2
-					context.arc(400, 400, 40, (Math.PI/180) * 0, (Math.PI/180) * 360);
-					context.clip();
-
-					// red rectangle
-					context.fillRect(300, 300, 100, 100);
-					
 					render();
 					window.addEventListener("resize", windowResized, false);
 				}
@@ -70,7 +40,33 @@
 			
 			/* Render Canvas */
 			function render() {
-				requestAnimationFrame(render);
+				/* Create black background */
+				context.fillStyle = '#000000';
+				context.fillRect(0, 0, bg.width, bg.height);
+				
+				context.save();
+				
+				// helps visualize clip area
+				context.strokeStyle = '#333333';
+				context.strokeRect(100, 100, 200, 200);
+
+				// Clipping area 1
+				context.rect(100, 100, 200, 200);
+				context.clip();
+
+				// red rectangle
+				context.fillStyle = "#FF0000";
+				context.fillRect(190, 100, 300, 300);
+
+				context.restore();
+				context.fillStyle = "#FF0000";
+
+				// Clipping area 2
+				context.arc(400, 400, 40, (Math.PI/180) * 0, (Math.PI/180) * 360);
+				context.clip();
+
+				// red rectangle
+				context.fillRect(300, 300, 100, 100);
 			}
 			
 			/* Re-arrange Objects on Resize */
@@ -84,6 +80,7 @@
 			
 			function windowResized(e) {
 				reArrange();
+				render();
 			}
 
 		window.addEventListener("load", function() {
