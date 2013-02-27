@@ -26,52 +26,52 @@
 			context,
 			bg = { width: 0, height: 0 };
 
-			Compositing.init = function() {
-				canvas = document.getElementById('main');
+		Compositing.init = function() {
+			canvas = document.getElementById('main');
 
-				if (canvas && canvas.getContext) {
-					context = canvas.getContext('2d');
+			if (canvas && canvas.getContext) {
+				context = canvas.getContext('2d');
 
-					reArrange();
-					render();
-					window.addEventListener("resize", windowResized, false);
-				}
-			}
-			
-			/* Render Canvas */
-			function render() {
-				/* Create black background */
-				context.fillStyle = '#000000';
-				context.fillRect(0, 0, bg.width, bg.height);
-				
-				context.globalCompositeOperation = "source-atop";
-				context.fillStyle = "#FFFFFF";
-				context.fillRect(20, 20, 300, 300);
-
-				context.globalCompositeOperation = "source-over";
-				context.fillStyle = "#0000FF";
-				context.fillRect(5, 5, 50, 50);
-				context.fillRect(60, 5, 50, 50);
-				context.fillRect(5, 60, 50, 50);
-
-				context.globalCompositeOperation = "source-over";
-				context.globalAlpha = 0.3;
-				context.fillRect(60, 60, 50, 50);
-			}
-			
-			/* Re-arrange Objects on Resize */
-			function reArrange() {
-				canvas.width = window.innerWidth;
-				canvas.height = window.innerHeight;
-				
-				bg.width = canvas.width;
-				bg.height = canvas.height;
-			}
-			
-			function windowResized(e) {
 				reArrange();
 				render();
+				window.addEventListener("resize", windowResized, false);
 			}
+		}
+		
+		/* Render Canvas */
+		var render = function() {
+			/* Create black background */
+			context.fillStyle = '#000000';
+			context.fillRect(0, 0, bg.width, bg.height);
+			
+			context.globalCompositeOperation = "source-atop";
+			context.fillStyle = "#FFFFFF";
+			context.fillRect(20, 20, 300, 300);
+
+			context.globalCompositeOperation = "source-over";
+			context.fillStyle = "#0000FF";
+			context.fillRect(5, 5, 50, 50);
+			context.fillRect(60, 5, 50, 50);
+			context.fillRect(5, 60, 50, 50);
+
+			context.globalCompositeOperation = "source-over";
+			context.globalAlpha = 0.3;
+			context.fillRect(60, 60, 50, 50);
+		}
+		
+		/* Re-arrange Objects on Resize */
+		var reArrange = function() {
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			
+			bg.width = canvas.width;
+			bg.height = canvas.height;
+		}
+		
+		var windowResized = function(e) {
+			reArrange();
+			render();
+		}
 
 		window.addEventListener("load", function() {
 			Compositing.init();

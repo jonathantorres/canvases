@@ -43,76 +43,76 @@
 			speed = 0,
 			acceleration = 0.5;
 
-			BunchOfSquares.init = function() {
-				canvas = document.getElementById('main');
+		BunchOfSquares.init = function() {
+			canvas = document.getElementById('main');
 
-				if (canvas && canvas.getContext) {
-					context = canvas.getContext('2d');
-				
-					//create the squares
-					for (var col = 0; col < numOfSquaresX; col++) {
-						for (var row = 0; row < numOfSquaresY; row++) {
-							squareX = col * (squareWidth + squaresOffset);
-							squareStartY = -Math.random() * 300 - 100;
-							squareEndY = row * (squareHeight + squaresOffset);
-							squareColor = Math.round(Math.random() * 0xFFFFFF).toString(16);
-							
-							square = { x: squareX, startY: squareStartY, endY: squareEndY, width: squareWidth, height: squareHeight, color: squareColor };
-							squares.push(square);
-						}
-					}
-
-					//create container X and Y dimensions
-					for (var i = 0; i < numOfSquaresX; i++) {
-						var square = squares[i];
-						container.width += square.width + squaresOffset;
-						container.height += square.height + squaresOffset;
-					}
-					
-					render();
-					reArrange();
-					window.addEventListener("resize", windowResized, false);
-				}
-			}
+			if (canvas && canvas.getContext) {
+				context = canvas.getContext('2d');
 			
-			/* Render Canvas */
-			function render() {
-				requestAnimationFrame(render);
-				
-				speed += acceleration;
-				
-				/* Create black background */
-				context.fillStyle = '#000000';
-				context.fillRect(0, 0, bg.width, bg.height);
-				
-				container.x = (canvas.width * 0.5) - (container.width * 0.5);
-				container.y = (canvas.height * 0.5) - (container.height * 0.5);
-				
-				//draw the squares
-				for (var i = 0; i < squares.length; i++) {
+				//create the squares
+				for (var col = 0; col < numOfSquaresX; col++) {
+					for (var row = 0; row < numOfSquaresY; row++) {
+						squareX = col * (squareWidth + squaresOffset);
+						squareStartY = -Math.random() * 300 - 100;
+						squareEndY = row * (squareHeight + squaresOffset);
+						squareColor = Math.round(Math.random() * 0xFFFFFF).toString(16);
+						
+						square = { x: squareX, startY: squareStartY, endY: squareEndY, width: squareWidth, height: squareHeight, color: squareColor };
+						squares.push(square);
+					}
+				}
+
+				//create container X and Y dimensions
+				for (var i = 0; i < numOfSquaresX; i++) {
 					var square = squares[i];
-					square.startY += speed;
-					
-					if (square.startY >= container.y + square.endY)
-						square.startY = container.y + square.endY;
-					
-					context.fillStyle = square.color;
-					context.fillRect(container.x + square.x, square.startY, square.width, square.height);
+					container.width += square.width + squaresOffset;
+					container.height += square.height + squaresOffset;
 				}
-			}
-			
-			/* Re-arrange Objects on Resize */
-			function reArrange() {
-				canvas.width = window.innerWidth;
-				canvas.height = window.innerHeight;
 				
-				bg.width = canvas.width;
-				bg.height = canvas.height;
-			}
-			
-			function windowResized(e) {
+				render();
 				reArrange();
+				window.addEventListener("resize", windowResized, false);
 			}
+		}
+		
+		/* Render Canvas */
+		var render = function() {
+			requestAnimationFrame(render);
+			
+			speed += acceleration;
+			
+			/* Create black background */
+			context.fillStyle = '#000000';
+			context.fillRect(0, 0, bg.width, bg.height);
+			
+			container.x = (canvas.width * 0.5) - (container.width * 0.5);
+			container.y = (canvas.height * 0.5) - (container.height * 0.5);
+			
+			//draw the squares
+			for (var i = 0; i < squares.length; i++) {
+				var square = squares[i];
+				square.startY += speed;
+				
+				if (square.startY >= container.y + square.endY)
+					square.startY = container.y + square.endY;
+				
+				context.fillStyle = square.color;
+				context.fillRect(container.x + square.x, square.startY, square.width, square.height);
+			}
+		}
+		
+		/* Re-arrange Objects on Resize */
+		var reArrange = function() {
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			
+			bg.width = canvas.width;
+			bg.height = canvas.height;
+		}
+		
+		var windowResized = function(e) {
+			reArrange();
+		}
 
 		window.addEventListener("load", function() {
 			BunchOfSquares.init();

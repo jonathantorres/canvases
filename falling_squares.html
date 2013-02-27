@@ -30,56 +30,56 @@
 			acceleration = 0.1,
 			speed = 0.0;
 
-			FallingSquares.init = function() {
-				canvas = document.getElementById('main');
+		FallingSquares.init = function() {
+			canvas = document.getElementById('main');
 
-				if (canvas && canvas.getContext) {
-					context = canvas.getContext('2d');
-					
-					render();
-					reArrange();
-					window.addEventListener("resize", windowResized, false);
-				}
-			}
-
-			function checkBottom() {
-				if (square.y + square.height > canvas.height) {
-					square.y = canvas.height - square.height;
-					acceleration = 0;
-					speed = 0;
-				}
-			}
-			
-			/* Render Canvas */
-			function render() {
-				requestAnimationFrame(render);
-
-				checkBottom();
-				speed += acceleration;
-				square.y += speed;
+			if (canvas && canvas.getContext) {
+				context = canvas.getContext('2d');
 				
-				/* Create black background */
-				context.fillStyle = '#000000';
-				context.fillRect(0, 0, bg.width, bg.height);
-
-				context.fillStyle = '#FF0000';
-				context.fillRect(square.x, square.y, square.width, square.height);
-			}
-			
-			/* Re-arrange Objects on Resize */
-			function reArrange() {
-				canvas.width = window.innerWidth;
-				canvas.height = window.innerHeight;
-				
-				bg.width = canvas.width;
-				bg.height = canvas.height;
-
-				square.x = canvas.width * 0.5;
-			}
-			
-			function windowResized(e) {
+				render();
 				reArrange();
+				window.addEventListener("resize", windowResized, false);
 			}
+		}
+
+		var checkBottom = function() {
+			if (square.y + square.height > canvas.height) {
+				square.y = canvas.height - square.height;
+				acceleration = 0;
+				speed = 0;
+			}
+		}
+		
+		/* Render Canvas */
+		var render = function() {
+			requestAnimationFrame(render);
+
+			checkBottom();
+			speed += acceleration;
+			square.y += speed;
+			
+			/* Create black background */
+			context.fillStyle = '#000000';
+			context.fillRect(0, 0, bg.width, bg.height);
+
+			context.fillStyle = '#FF0000';
+			context.fillRect(square.x, square.y, square.width, square.height);
+		}
+		
+		/* Re-arrange Objects on Resize */
+		var reArrange = function() {
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			
+			bg.width = canvas.width;
+			bg.height = canvas.height;
+
+			square.x = canvas.width * 0.5;
+		}
+		
+		var windowResized = function(e) {
+			reArrange();
+		}
 
 		window.addEventListener("load", function() {
 			FallingSquares.init();
