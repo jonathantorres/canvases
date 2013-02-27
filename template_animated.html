@@ -27,42 +27,42 @@
 			context,
 			bg = { width: 0, height: 0 };
 
-			Template.init = function() {
-				canvas = document.getElementById('main');
+		Template.init = function() {
+			canvas = document.getElementById('main');
 
-				if (canvas && canvas.getContext) {
-					context = canvas.getContext('2d');
+			if (canvas && canvas.getContext) {
+				context = canvas.getContext('2d');
 
-					console.log("start :)");
-					
-					render();
-					reArrange();
-					window.addEventListener("resize", windowResized, false);
-				}
-			}
-			
-			/* Render Canvas */
-			var render = function() {
-				requestAnimationFrame(render);
-				console.log("render :D");
+				console.log("start :)");
 				
-				/* Create black background */
-				context.fillStyle = '#000000';
-				context.fillRect(0, 0, bg.width, bg.height);
-			}
-			
-			/* Re-arrange Objects on Resize */
-			var reArrange = function() {
-				canvas.width = window.innerWidth;
-				canvas.height = window.innerHeight;
-				
-				bg.width = canvas.width;
-				bg.height = canvas.height;
-			}
-			
-			var windowResized = function(e) {
+				render();
 				reArrange();
+				window.addEventListener("resize", windowResized, false);
 			}
+		}
+		
+		/* Render Canvas */
+		var render = function() {
+			requestAnimationFrame(render);
+			console.log("render :D");
+			
+			/* Create black background */
+			context.fillStyle = '#000000';
+			context.fillRect(0, 0, bg.width, bg.height);
+		}
+		
+		/* Re-arrange Objects on Resize */
+		var reArrange = function() {
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			
+			bg.width = canvas.width;
+			bg.height = canvas.height;
+		}
+		
+		var windowResized = function(e) {
+			reArrange();
+		}
 
 		window.addEventListener("load", function() {
 			Template.init();
