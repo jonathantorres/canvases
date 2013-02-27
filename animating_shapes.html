@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>  
+		<meta charset="utf-8">
+		<meta name="description" content="" />  
+		<meta name="keywords" content="" />
+		<meta name="author" content="" />
+		<title>Animating Shapes</title>
+		<style type="text/css">
+			html, body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			#main { margin: 0px; padding: 0px; }
+		</style>
+		<script src="js/rAF.js"></script>
+	</head>
+
+	<body>
+		<canvas id="main">Canvas not supported :/ </canvas>
+	</body>
+	
+	<script type="text/javascript">
+		var AnimatingShapes = {},
+			canvas,
+			context,
+			bg = { width: 0, height: 0 },
+			speed = 0,
+			acceleration = 0.01,
+			shapes = [];
+
+		var Shape = function(x, y, width, height) {
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.height = height;
+		}
+
+		AnimatingShapes.init = function() {
+			canvas = document.getElementById('main');
+
+			if (canvas && canvas.getContext) {
+				context = canvas.getContext('2d');
+
+				for (var i = 0; i < 10; i++) {
+					var x = Math.random() * window.innerWidth,
+						y = Math.random() * window.innerHeight,
+						width = height = Math.random() * 60 + 30;
+					
+					shapes.push(new Shape(x, y, width, height));
+				}
+				
+				render();
+				reArrange();
+				window.addEventListener("resize", windowResized, false);
+			}
+		}
+		
+		/* Render Canvas */
+		var render = function() {
+			requestAnimationFrame(render);
+
+			speed += acceleration;
+			
+			/* Create black background */
+			context.fillStyle = '#000000';
+			context.fillRect(0, 0, bg.width, bg.height);
+
+			context.fillStyle = '#F00';
+			context.strokeStyle = '#FFF';
+			context.lineWidth = 2;
+
+			for (var i = 0; i < shapes.length; i++) {
+				var shape = shapes[i];
+				shape.x += speed;
+				shape.y += speed;
+
+				// shapes are wiggling :P
+				// shape.x += Math.random() * 4 - 2;
+				// shape.y += Math.random() * 4 - 2;
+				context.strokeRect(shape.x, shape.y, shape.width, shape.height);
+				context.fillRect(shape.x, shape.y, shape.width, shape.height);
+			}
+		}
+		
+		/* Re-arrange Objects on Resize */
+		var reArrange = function() {
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			
+			bg.width = canvas.width;
+			bg.height = canvas.height;
+		}
+		
+		var windowResized = function(e) {
+			reArrange();
+		}
+
+		window.addEventListener("load", function() {
+			AnimatingShapes.init();
+		}, false);
+	</script>
+
+</html>
