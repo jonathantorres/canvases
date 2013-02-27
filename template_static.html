@@ -41,7 +41,7 @@
 			}
 			
 			/* Render Canvas */
-			function render() {
+			var render = function() {
 				console.log("render :D");
 				
 				/* Create black background */
@@ -50,7 +50,7 @@
 			}
 			
 			/* Re-arrange Objects on Resize */
-			function reArrange() {
+			var reArrange = function() {
 				canvas.width = window.innerWidth;
 				canvas.height = window.innerHeight;
 				
@@ -58,7 +58,7 @@
 				bg.height = canvas.height;
 			}
 			
-			function windowResized(e) {
+			var windowResized = function(e) {
 				reArrange();
 				render();
 			}

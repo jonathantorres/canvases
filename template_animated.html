@@ -42,7 +42,7 @@
 			}
 			
 			/* Render Canvas */
-			function render() {
+			var render = function() {
 				requestAnimationFrame(render);
 				console.log("render :D");
 				
@@ -52,7 +52,7 @@
 			}
 			
 			/* Re-arrange Objects on Resize */
-			function reArrange() {
+			var reArrange = function() {
 				canvas.width = window.innerWidth;
 				canvas.height = window.innerHeight;
 				
@@ -60,7 +60,7 @@
 				bg.height = canvas.height;
 			}
 			
-			function windowResized(e) {
+			var windowResized = function(e) {
 				reArrange();
 			}
 
