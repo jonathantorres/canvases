@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>  
+		<meta charset="utf-8">
+		<meta name="description" content="" />  
+		<meta name="keywords" content="" />
+		<meta name="author" content="" />
+		<title>Edge Boundaries</title>
+		<style type="text/css">
+			html, body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			#main { margin: 0px; padding: 0px; }
+		</style>
+		<script src="js/rAF.js"></script>
+	</head>
+
+	<body>
+		<canvas id="main">Canvas not supported :/ </canvas>
+	</body>
+	
+	<script type="text/javascript">
+		var EdgeBoundaries = {},
+			canvas,
+			context,
+			bg = { width: 0, height: 0 },
+			speed = 2,
+			acceleration = 0.001,
+			shapes = [];
+
+		var Shape = function(x, y, width, height, color) {
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.height = height;
+			this.color = color;
+			this.reverseX = false;
+			this.reverseY = false;
+		}
+
+		EdgeBoundaries.init = function() {
+			canvas = document.getElementById('main');
+
+			if (canvas && canvas.getContext) {
+				context = canvas.getContext('2d');
+
+				for (var i = 0; i < 20; i++) {
+					var x = Math.random() * window.innerWidth,
+						y = Math.random() * window.innerHeight,
+						width = height = Math.random() * 60 + 30,
+						color = Math.round(Math.random() * 0xFFFFFF).toString(16);
+					
+					shapes.push(new Shape(x, y, width, height, color));
+				}
+				
+				render();
+				reArrange();
+				window.addEventListener("resize", windowResized, false);
+			}
+		}
+		
+		/* Render Canvas */
+		var render = function() {
+			requestAnimationFrame(render);
+
+			speed += acceleration;
+			
+			/* Create black background */
+			context.fillStyle = '#000000';
+			context.fillRect(0, 0, bg.width, bg.height);
+
+			context.strokeStyle = '#FFF';
+			context.lineWidth = 2;
+			
+			var shapesLength = shapes.length;
+			for (var i = 0; i < shapesLength; i++) {
+				var shape = shapes[i];
+
+				// Check boundaries
+				if (shape.x + shape.width > canvas.width) {
+					shape.reverseX = true;
+				} else if (shape.x < 0) {
+					shape.reverseX = false;
+				}
+
+				if (shape.y + shape.height > canvas.height) {
+					shape.reverseY = true;
+				} else if (shape.y < 0) {
+					shape.reverseY = false;
+				}
+
+				// Reverse accordingly
+				if (shape.reverseX) {
+					shape.x -= speed;
+				} else {
+					shape.x += speed;
+				}
+
+				if (shape.reverseY) {
+					shape.y -= speed;
+				} else {
+					shape.y += speed;
+				}
+				
+				context.fillStyle = shape.color;
+				context.strokeRect(shape.x, shape.y, shape.width, shape.height);
+				context.fillRect(shape.x, shape.y, shape.width, shape.height);
+			}
+		}
+		
+		/* Re-arrange Objects on Resize */
+		var reArrange = function() {
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			
+			bg.width = canvas.width;
+			bg.height = canvas.height;
+		}
+		
+		var windowResized = function(e) {
+			reArrange();
+		}
+
+		window.addEventListener("load", function() {
+			EdgeBoundaries.init();
+		}, false);
+	</script>
+
+</html>
