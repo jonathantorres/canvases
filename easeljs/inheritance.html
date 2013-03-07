@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+	<head>  
+		<meta charset="utf-8">
+		<meta name="description" content="" />  
+		<meta name="keywords" content="" />
+		<meta name="author" content="" />
+		<title>Easel Inheritance</title>
+		<style type="text/css">
+			html, body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			#main { margin: 0px; padding: 0px; }
+		</style>
+		<!-- CreateJS namespace -->
+		<script>
+			var createjs = window;
+		</script>
+		<script src="../js/easeljs-0.6.0.min.js"></script>
+	</head>
+
+	<body>
+		<canvas id="main">Canvas not supported :/ </canvas>
+	</body>
+	
+	<script type="text/javascript">
+		var Inheritance = {},
+			canvas,
+			stage,
+			bg,
+			circle;
+
+		Inheritance.init = function() {
+			canvas = document.getElementById("main");
+			stage = new Stage(canvas);
+
+			setCanvasSize();
+
+			bg = new Shape();
+			bg.graphics.beginFill("#000");
+			bg.graphics.drawRect(0, 0, stage.canvas.width, stage.canvas.height);
+			stage.addChild(bg);
+
+			circle = new Circle(100, "Hey I'm ticking");
+			circle.x = stage.canvas.width * 0.5;
+			circle.y = stage.canvas.height * 0.5;
+			stage.addChild(circle);
+
+			Ticker.setFPS(60);
+			Ticker.useRAF = true;
+			Ticker.addEventListener("tick", tick);
+			window.addEventListener("resize", resized, false);
+		}
+
+		// Tick on every frame
+		var tick = function(e) {
+			stage.update();
+			circle.tick();
+		}
+		
+		// Re-arrange Objects on Resize 
+		var resized = function(e) {
+			setCanvasSize();
+
+			bg.graphics.beginFill("#000");
+			bg.graphics.drawRect(0, 0, stage.canvas.width, stage.canvas.height);
+
+			stage.update();
+		}
+
+		// Canvas size same as window
+		var setCanvasSize = function() {
+			stage.canvas.width = window.innerWidth;
+			stage.canvas.height = window.innerHeight;
+		}
+
+		window.addEventListener("load", function() {
+			Inheritance.init();
+		}, false);
+	</script>
+	
+	<!-- my Circle class -->
+	<script>
+		(function(window) {
+
+			// constructor
+			function Circle(radius, message) {
+				this.initialize(radius, message);
+			}
+
+			// extends Container
+			Circle.prototype = new Container();
+
+			// public properties
+			Circle.prototype.radius;
+			Circle.prototype.message;
+
+			// private properties
+			var txt,
+				i = 0;
+
+			// set the instance initialize() function to be the parent's initialize()
+			Circle.prototype.Container_initialize = Circle.prototype.initialize;
+
+			// instance initialize()
+			Circle.prototype.initialize = function(radius, message) {
+				this.Container_initialize(); // call the parent's initialize, same as super();
+
+				this.radius = radius;
+				this.message = message;
+
+				var circle = new Shape();
+				circle.graphics.beginFill("#0F0");
+				circle.graphics.drawCircle(0, 0, radius);
+				this.addChild(circle);
+
+				txt = new Text(message, "14px Arial", "#000");
+				txt.textAlign = "center";
+				this.addChild(txt);
+			}
+
+			Circle.prototype.tick = function() {
+				txt.text = this.message + " : " + i++;
+			}
+
+			window.Circle = Circle;
+
+		}(window));
+	</script>
+
+</html>
