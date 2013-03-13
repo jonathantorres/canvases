@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+	<head>  
+		<meta charset="utf-8">
+		<meta name="description" content="" />  
+		<meta name="keywords" content="" />
+		<meta name="author" content="" />
+		<title>Mouse Distance</title>
+		<style type="text/css">
+			html, body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			#main { margin: 0px; padding: 0px; }
+		</style>
+		<!-- CreateJS namespace -->
+		<script>
+			var createjs = window;
+		</script>
+		<script src="../js/easeljs-0.6.0.min.js"></script>
+		<script src="Ball.js"></script>
+	</head>
+
+	<body>
+		<canvas id="main">Canvas not supported :/ </canvas>
+	</body>
+	
+	<script type="text/javascript">
+		var MouseDistance = {},
+			canvas,
+			stage,
+			bg,
+			square,
+			line,
+			message;
+
+		MouseDistance.init = function() {
+			canvas = document.getElementById("main");
+			stage = new Stage(canvas);
+
+			setCanvasSize();
+
+			bg = new Shape();
+			bg.graphics.beginFill("#000");
+			bg.graphics.drawRect(0, 0, stage.canvas.width, stage.canvas.height);
+			stage.addChild(bg);
+
+			square = new Shape();
+			square.graphics.setStrokeStyle(1);
+			square.graphics.beginStroke("#FFF");
+			square.graphics.beginFill("#F00");
+			square.graphics.drawRect(-25, -25, 50, 50);
+			stage.addChild(square);
+			square.x = stage.canvas.width * 0.5;
+			square.y = stage.canvas.height * 0.5;
+
+			line = new Shape();
+			line.graphics.setStrokeStyle(1);
+			stage.addChild(line);
+
+			message = new Text("Distance:", "16px Arial", "#FFF");
+			message.x = (stage.canvas.width * 0.5) - (message.getMeasuredWidth() * 0.5);
+			message.y = stage.canvas.height - (message.getMeasuredHeight() + 10);
+			message.textAlign = "center";
+			stage.addChild(message);
+
+			Ticker.setFPS(60);
+			Ticker.useRAF = true;
+			Ticker.addEventListener("tick", tick);
+			stage.addEventListener("stagemousemove", mouseMove);
+			window.addEventListener("resize", resized, false);
+		}
+
+		var mouseMove = function(e) {
+			line.graphics.clear();
+			line.graphics.beginStroke("#FFF");
+			line.graphics.moveTo(square.x, square.y);
+			line.graphics.lineTo(stage.mouseX, stage.mouseY);
+
+			var dx = square.x - stage.mouseX;
+			var dy = square.y - stage.mouseY;
+			var dist = Math.sqrt(dx*dx + dy*dy);
+
+			message.text = "Distance: " + Math.ceil(dist) + "px";
+		}
+
+		// Tick on every frame
+		var tick = function(e) {
+			stage.update();
+		}
+		
+		// Re-arrange Objects on Resize 
+		var resized = function(e) {
+			setCanvasSize();
+
+			bg.graphics.beginFill("#000");
+			bg.graphics.drawRect(0, 0, stage.canvas.width, stage.canvas.height);
+
+			square.x = stage.canvas.width * 0.5;
+			square.y = stage.canvas.height * 0.5;
+
+			stage.update();
+		}
+
+		// Canvas size same as window
+		var setCanvasSize = function() {
+			stage.canvas.width = window.innerWidth;
+			stage.canvas.height = window.innerHeight;
+		}
+
+		window.addEventListener("load", function() {
+			MouseDistance.init();
+		}, false);
+	</script>
+
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>  
+		<meta charset="utf-8">
+		<meta name="description" content="" />  
+		<meta name="keywords" content="" />
+		<meta name="author" content="" />
+		<title>Distance</title>
+		<style type="text/css">
+			html, body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			#main { margin: 0px; padding: 0px; }
+		</style>
+		<!-- CreateJS namespace -->
+		<script>
+			var createjs = window;
+		</script>
+		<script src="../js/easeljs-0.6.0.min.js"></script>
+		<script src="Ball.js"></script>
+	</head>
+
+	<body>
+		<canvas id="main">Canvas not supported :/ </canvas>
+	</body>
+	
+	<script type="text/javascript">
+		var Distance = {},
+			canvas,
+			stage,
+			bg,
+			ball1,
+			ball2;
+
+		Distance.init = function() {
+			canvas = document.getElementById("main");
+			stage = new Stage(canvas);
+
+			setCanvasSize();
+
+			bg = new Shape();
+			bg.graphics.beginFill("#000");
+			bg.graphics.drawRect(0, 0, stage.canvas.width, stage.canvas.height);
+			stage.addChild(bg);
+
+			ball1 = new Ball();
+			ball1.x = Math.random() * stage.canvas.width;
+			ball1.y = Math.random() * stage.canvas.height;
+			stage.addChild(ball1);
+
+			ball2 = new Ball();
+			ball2.x = Math.random() * stage.canvas.width;
+			ball2.y = Math.random() * stage.canvas.height;
+			stage.addChild(ball2);
+
+			var dx = ball1.x - ball2.x;
+			var dy = ball1.y - ball2.y;
+			var distance = Math.sqrt(dx*dx + dy*dy);
+
+			console.log("Distance: " + distance);
+
+			Ticker.setFPS(60);
+			Ticker.useRAF = true;
+			Ticker.addEventListener("tick", tick);
+			window.addEventListener("resize", resized, false);
+		}
+
+		// Tick on every frame
+		var tick = function(e) {
+			stage.update();
+		}
+		
+		// Re-arrange Objects on Resize 
+		var resized = function(e) {
+			setCanvasSize();
+
+			bg.graphics.beginFill("#000");
+			bg.graphics.drawRect(0, 0, stage.canvas.width, stage.canvas.height);
+
+			stage.update();
+		}
+
+		// Canvas size same as window
+		var setCanvasSize = function() {
+			stage.canvas.width = window.innerWidth;
+			stage.canvas.height = window.innerHeight;
+		}
+
+		window.addEventListener("load", function() {
+			Distance.init();
+		}, false);
+	</script>
+
+</html>
