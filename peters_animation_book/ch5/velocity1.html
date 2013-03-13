@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>  
+		<meta charset="utf-8">
+		<meta name="description" content="" />  
+		<meta name="keywords" content="" />
+		<meta name="author" content="" />
+		<title>Velocity 1</title>
+		<style type="text/css">
+			html, body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			#main { margin: 0px; padding: 0px; }
+		</style>
+		<!-- CreateJS namespace -->
+		<script>
+			var createjs = window;
+		</script>
+		<script src="../js/easeljs-0.6.0.min.js"></script>
+		<script src="Ball.js"></script>
+	</head>
+
+	<body>
+		<canvas id="main">Canvas not supported :/ </canvas>
+	</body>
+	
+	<script type="text/javascript">
+		var Velocity1 = {},
+			canvas,
+			stage,
+			bg,
+			ball,
+			vx = 5;
+
+		Velocity1.init = function() {
+			canvas = document.getElementById("main");
+			stage = new Stage(canvas);
+
+			setCanvasSize();
+
+			bg = new Shape();
+			bg.graphics.beginFill("#000");
+			bg.graphics.drawRect(0, 0, stage.canvas.width, stage.canvas.height);
+			stage.addChild(bg);
+
+			ball = new Ball();
+			ball.y = stage.canvas.height * 0.5;
+			stage.addChild(ball);
+
+			Ticker.setFPS(60);
+			Ticker.useRAF = true;
+			Ticker.addEventListener("tick", tick);
+			window.addEventListener("resize", resized, false);
+		}
+
+		// Tick on every frame
+		var tick = function(e) {
+			stage.update();
+			ball.x += vx;
+		}
+		
+		// Re-arrange Objects on Resize 
+		var resized = function(e) {
+			setCanvasSize();
+
+			bg.graphics.beginFill("#000");
+			bg.graphics.drawRect(0, 0, stage.canvas.width, stage.canvas.height);
+
+			stage.update();
+		}
+
+		// Canvas size same as window
+		var setCanvasSize = function() {
+			stage.canvas.width = window.innerWidth;
+			stage.canvas.height = window.innerHeight;
+		}
+
+		window.addEventListener("load", function() {
+			Velocity1.init();
+		}, false);
+	</script>
+
+</html>
