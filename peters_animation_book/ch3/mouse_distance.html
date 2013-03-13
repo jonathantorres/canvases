@@ -19,7 +19,6 @@
 			var createjs = window;
 		</script>
 		<script src="../js/easeljs-0.6.0.min.js"></script>
-		<script src="Ball.js"></script>
 	</head>
 
 	<body>
@@ -99,6 +98,9 @@
 
 			square.x = stage.canvas.width * 0.5;
 			square.y = stage.canvas.height * 0.5;
+
+			message.x = (stage.canvas.width * 0.5) - (message.getMeasuredWidth() * 0.5);
+			message.y = stage.canvas.height - (message.getMeasuredHeight() + 10);
 
 			stage.update();
 		}
