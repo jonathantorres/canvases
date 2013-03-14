@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>  
+		<meta charset="utf-8">
+		<meta name="description" content="" />  
+		<meta name="keywords" content="" />
+		<meta name="author" content="" />
+		<title>Gravity</title>
+		<style type="text/css">
+			html, body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			#main { margin: 0px; padding: 0px; }
+		</style>
+		<!-- CreateJS namespace -->
+		<script>
+			var createjs = window;
+		</script>
+		<script src="../js/easeljs-0.6.0.min.js"></script>
+		<script src="Ball.js"></script>
+	</head>
+
+	<body>
+		<canvas id="main">Canvas not supported :/ </canvas>
+	</body>
+	
+	<script type="text/javascript">
+		var Gravity = {},
+			canvas,
+			stage,
+			bg,
+			ball,
+			speed = 0.1,
+			gravity = 0.05,
+			ax = 0,
+			ay = 0,
+			vx = 0,
+			vy = 0;
+
+		Gravity.init = function() {
+			canvas = document.getElementById("main");
+			stage = new Stage(canvas);
+
+			setCanvasSize();
+
+			bg = new Shape();
+			bg.graphics.beginFill("#000");
+			bg.graphics.drawRect(0, 0, stage.canvas.width, stage.canvas.height);
+			stage.addChild(bg);
+
+			ball = new Ball();
+			ball.x = stage.canvas.width * 0.5;
+			ball.y = stage.canvas.height * 0.5;
+			stage.addChild(ball);
+
+			Ticker.setFPS(60);
+			Ticker.useRAF = true;
+			Ticker.addEventListener("tick", tick);
+			window.addEventListener("resize", resized, false);
+			window.addEventListener("keyup", keyup, false);
+			window.addEventListener("keydown", keydown, false);
+		}
+
+		// Tick on every frame
+		var tick = function(e) {
+			stage.update();
+
+			vx += ax;
+			vy += ay;
+			vy += gravity;
+
+			ball.x += vx;
+			ball.y += vy;
+		}
+
+		var keyup = function(e) {
+			ax = 0;
+			ay = 0;
+		}
+
+		var keydown = function(e) {
+			switch(e.keyCode) {
+				case 37 : // left
+					ax = -speed;
+					break;
+
+				case 39 : // right
+					ax = speed;
+					break;
+
+				case 38 : // up
+					ay = -speed;
+					break;
+
+				case 40 : // down
+					ay = speed;
+					break;
+			}
+		}
+		
+		// Re-arrange Objects on Resize 
+		var resized = function(e) {
+			setCanvasSize();
+
+			bg.graphics.beginFill("#000");
+			bg.graphics.drawRect(0, 0, stage.canvas.width, stage.canvas.height);
+
+			stage.update();
+		}
+
+		// Canvas size same as window
+		var setCanvasSize = function() {
+			stage.canvas.width = window.innerWidth;
+			stage.canvas.height = window.innerHeight;
+		}
+
+		window.addEventListener("load", function() {
+			Gravity.init();
+		}, false);
+	</script>
+
+</html>
