@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>  
+		<meta charset="utf-8">
+		<meta name="description" content="" />  
+		<meta name="keywords" content="" />
+		<meta name="author" content="" />
+		<title>Ship Simulation 2</title>
+		<style type="text/css">
+			html, body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			#main { margin: 0px; padding: 0px; }
+		</style>
+		<!-- CreateJS namespace -->
+		<script>
+			var createjs = window;
+		</script>
+		<script src="../js/easeljs-0.6.0.min.js"></script>
+		<script src="Ship.js"></script>
+	</head>
+
+	<body>
+		<canvas id="main">Canvas not supported :/ </canvas>
+	</body>
+	
+	<script type="text/javascript">
+		var ShipSimulation = {},
+			canvas,
+			stage,
+			bg,
+			ship,
+			thrust = 0,
+			vx = 0,
+			vy = 0,
+			vr = 0,
+			speed = 0.05,
+			rotationSpeed = 5;
+
+		ShipSimulation.init = function() {
+			canvas = document.getElementById("main");
+			stage = new Stage(canvas);
+
+			setCanvasSize();
+
+			bg = new Shape();
+			bg.graphics.beginFill("#000");
+			bg.graphics.drawRect(0, 0, stage.canvas.width, stage.canvas.height);
+			stage.addChild(bg);
+
+			ship = new Ship();
+			ship.x = stage.canvas.width * 0.5;
+			ship.y = stage.canvas.height * 0.5;
+			stage.addChild(ship);
+
+			Ticker.setFPS(60);
+			Ticker.useRAF = true;
+			Ticker.addEventListener("tick", tick);
+			window.addEventListener("resize", resized, false);
+			window.addEventListener("keyup", keyup, false);
+			window.addEventListener("keydown", keydown, false);
+		}
+
+		// Tick on every frame
+		var tick = function(e) {
+			ship.rotation += vr;
+			var angle = ship.rotation * Math.PI / 180;
+			var ax = Math.cos(angle) * thrust;
+			var ay = Math.sin(angle) * thrust;
+
+			vx += ax;
+			vy += ay;
+
+			ship.x += vx;
+			ship.y += vy;
+
+			if (ship.x - ship.width * 0.5 > stage.canvas.width) {
+				ship.x = -ship.width * 0.5;
+			} else if (ship.x + ship.width * 0.5 < 0) {
+				ship.x = stage.canvas.width + ship.width * 0.5;
+			}
+
+			if (ship.y  - ship.height * 0.5 > stage.canvas.height) {
+				ship.y = -ship.height * 0.5;
+			} else if (ship.y + ship.height * 0.5 < 0) {
+				ship.y = stage.canvas.height + ship.height * 0.5;
+			}
+
+			stage.update();
+		}
+
+		var keyup = function(e) {
+			thrust = 0;
+			vr = 0;
+			ship.drawIt(false);
+		}
+
+		var keydown = function(e) {
+			switch(e.keyCode) {
+				case 37 : // left
+					vr = -rotationSpeed;
+					break;
+
+				case 39 : // right
+					vr = rotationSpeed;
+					break;
+
+				case 38 : // up
+					thrust = speed;
+					ship.drawIt(true);
+					break;
+			}
+		}
+		
+		// Re-arrange Objects on Resize 
+		var resized = function(e) {
+			setCanvasSize();
+
+			bg.graphics.beginFill("#000");
+			bg.graphics.drawRect(0, 0, stage.canvas.width, stage.canvas.height);
+
+			stage.update();
+		}
+
+		// Canvas size same as window
+		var setCanvasSize = function() {
+			stage.canvas.width = window.innerWidth;
+			stage.canvas.height = window.innerHeight;
+		}
+
+		window.addEventListener("load", function() {
+			ShipSimulation.init();
+		}, false);
+	</script>
+
+</html>
