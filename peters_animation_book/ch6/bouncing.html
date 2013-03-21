@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>  
+		<meta charset="utf-8">
+		<meta name="description" content="" />  
+		<meta name="keywords" content="" />
+		<meta name="author" content="" />
+		<title>Boundaries - Bouncing</title>
+		<style type="text/css">
+			html, body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			#main { margin: 0px; padding: 0px; }
+		</style>
+		<!-- CreateJS namespace -->
+		<script>
+			var createjs = window;
+		</script>
+		<script src="../js/easeljs-0.6.0.min.js"></script>
+		<script src="Ball.js"></script>
+	</head>
+
+	<body>
+		<canvas id="main">Canvas not supported :/ </canvas>
+	</body>
+	
+	<script type="text/javascript">
+		var Bouncing = {},
+			canvas,
+			stage,
+			bg,
+			numOfBalls = 100,
+			bounce = -1,
+			balls = [];
+
+		Bouncing.init = function() {
+			canvas = document.getElementById("main");
+			stage = new Stage(canvas);
+
+			setCanvasSize();
+
+			bg = new Shape();
+			bg.graphics.beginFill("#000");
+			bg.graphics.drawRect(0, 0, stage.canvas.width, stage.canvas.height);
+			stage.addChild(bg);
+
+			for (var i = 0; i < numOfBalls; i++) {
+				var color = Math.round(Math.random() * 0xFFFFFF).toString(16);
+				var ballRadius = Math.random() * 10 + 10;
+				var ball = new Ball(ballRadius, color);
+				ball.x = Math.random() * stage.canvas.width;	
+				ball.y = Math.random() * stage.canvas.height;
+				ball.vx = Math.random() * 10 - 5;
+				ball.vy = Math.random() * 12 - 6;
+				stage.addChild(ball);
+
+				balls.push(ball);
+			}
+
+			Ticker.setFPS(60);
+			Ticker.useRAF = true;
+			Ticker.addEventListener("tick", tick);
+			window.addEventListener("resize", resized, false);
+		}
+
+		// Tick on every frame
+		var tick = function(e) {
+			for (var i = 0; i < balls.length; i++) {
+				var ball = balls[i];
+				ball.x += ball.vx;
+				ball.y += ball.vy;
+
+				if (ball.x + ball.radius > stage.canvas.width) {
+					ball.x = stage.canvas.width - ball.radius;
+					ball.vx *= bounce;
+				} else if (ball.x - ball.radius < 0) {
+					ball.x = ball.radius;
+					ball.vx *= bounce;
+				}
+
+				if (ball.y + ball.radius > stage.canvas.height) {
+					ball.y = stage.canvas.height - ball.radius;
+					ball.vy *= bounce;
+				} else if (ball.y - ball.radius < 0) {
+					ball.y = ball.radius;
+					ball.vy *= bounce;
+				}
+			}
+
+			stage.update();
+		}
+		
+		// Re-arrange Objects on Resize 
+		var resized = function(e) {
+			setCanvasSize();
+
+			bg.graphics.beginFill("#000");
+			bg.graphics.drawRect(0, 0, stage.canvas.width, stage.canvas.height);
+
+			stage.update();
+		}
+
+		// Canvas size same as window
+		var setCanvasSize = function() {
+			stage.canvas.width = window.innerWidth;
+			stage.canvas.height = window.innerHeight;
+		}
+
+		window.addEventListener("load", function() {
+			Bouncing.init();
+		}, false);
+	</script>
+
+</html>

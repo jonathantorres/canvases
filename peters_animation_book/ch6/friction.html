@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+	<head>  
+		<meta charset="utf-8">
+		<meta name="description" content="" />  
+		<meta name="keywords" content="" />
+		<meta name="author" content="" />
+		<title>Friction</title>
+		<style type="text/css">
+			html, body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			#main { margin: 0px; padding: 0px; }
+		</style>
+		<!-- CreateJS namespace -->
+		<script>
+			var createjs = window;
+		</script>
+		<script src="../js/easeljs-0.6.0.min.js"></script>
+		<script src="Ball.js"></script>
+	</head>
+
+	<body>
+		<canvas id="main">Canvas not supported :/ </canvas>
+	</body>
+	
+	<script type="text/javascript">
+		var Friction = {},
+			canvas,
+			stage,
+			bg,
+			ball,
+			vx = 0,
+			vy = 0,
+			ax,
+			ay,
+			speedX,
+			speedY,
+			friction = 0.8;
+
+		Friction.init = function() {
+			canvas = document.getElementById("main");
+			stage = new Stage(canvas);
+
+			setCanvasSize();
+
+			bg = new Shape();
+			bg.graphics.beginFill("#000");
+			bg.graphics.drawRect(0, 0, stage.canvas.width, stage.canvas.height);
+			stage.addChild(bg);
+
+			var color = Math.round(Math.random() * 0xFFFFFF).toString(16);
+			ball = new Ball(30, color);
+			ball.x = stage.canvas.width * 0.5;	
+			ball.y = stage.canvas.height * 0.5;	
+			stage.addChild(ball);
+
+			speedX = Math.random() * 4 - 2;
+			speedY = Math.random() * 6 - 3;
+
+			ax = speedX;
+			ay = speedY;
+
+			Ticker.setFPS(60);
+			Ticker.useRAF = true;
+			Ticker.addEventListener("tick", tick);
+			window.addEventListener("resize", resized, false);
+		}
+
+		// Tick on every frame
+		var tick = function(e) {
+			vx += ax;
+			vy += ay;
+
+			vx *= friction;
+			vy *= friction;
+
+			ball.x += vx;
+			ball.y += vy;
+
+			if (ball.x + ball.radius > stage.canvas.width) {
+				ball.x = -ball.radius;
+			} else if (ball.x + ball.radius < 0) {
+				ball.x = stage.canvas.width - ball.radius;
+			}
+
+			if (ball.y - ball.radius > stage.canvas.height) {
+				ball.y = -ball.radius;
+			} else if (ball.y + ball.radius < 0) {
+				ball.y = stage.canvas.height - ball.radius;
+			}
+
+			stage.update();
+		}
+		
+		// Re-arrange Objects on Resize 
+		var resized = function(e) {
+			setCanvasSize();
+
+			bg.graphics.beginFill("#000");
+			bg.graphics.drawRect(0, 0, stage.canvas.width, stage.canvas.height);
+
+			stage.update();
+		}
+
+		// Canvas size same as window
+		var setCanvasSize = function() {
+			stage.canvas.width = window.innerWidth;
+			stage.canvas.height = window.innerHeight;
+		}
+
+		window.addEventListener("load", function() {
+			Friction.init();
+		}, false);
+	</script>
+
+</html>
