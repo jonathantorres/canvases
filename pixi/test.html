@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>  
+		<meta charset="utf-8">
+		<meta name="description" content="" />  
+		<meta name="keywords" content="" />
+		<meta name="author" content="" />
+		<title>Pixi.js Test</title>
+		<style type="text/css">
+			html, body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			canvas { margin: 0px; padding: 0px; }
+		</style>
+		<script src="js/pixi.js"></script>
+	</head>
+
+	<body>
+		
+	</body>
+	
+	<script type="text/javascript">
+		var Test = {},
+			renderer,
+			stage,
+			bunny,
+			centerY = 0,
+			speedY = 0.05,
+			range = 100,
+			angle = 0;
+
+		Test.init = function() {
+			stage = new PIXI.Stage(0x000000);
+			renderer = new PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.view);
+			setCanvasSize();
+
+			centerY = window.innerHeight / 2;
+
+			bunny = new PIXI.Sprite(PIXI.Texture.fromImage('assets/bunny.png'));
+			bunny.anchor.x = 0.5;
+			bunny.anchor.y = 0.5;
+			bunny.position.x = window.innerWidth / 2;
+			bunny.position.y = centerY;
+
+			stage.addChild(bunny);
+
+			window.addEventListener('resize', resized, false);
+			requestAnimFrame(tick);
+		}
+
+		// Tick on every frame
+		var tick = function(e) {
+			requestAnimFrame(tick);
+
+			bunny.position.y = centerY + Math.sin(angle) * range;
+			angle += speedY;
+
+			renderer.render(stage);
+		}
+		
+		// Re-arrange Objects on Resize 
+		var resized = function(e) {
+			setCanvasSize();
+
+			bunny.position.x = window.innerWidth / 2;
+			centerY = window.innerHeight / 2;
+
+			renderer.render(stage);
+		}
+
+		// Canvas size same as window
+		var setCanvasSize = function() {
+			renderer.view.width = window.innerWidth;
+			renderer.view.height = window.innerHeight;
+		}
+
+		window.addEventListener('load', function() {
+			Test.init();
+		}, false);
+	</script>
+
+</html>
